@@ -13,5 +13,6 @@ repos:
         name: mypy
         description: mypy
         entry: env -i PATH=./bin:./.venv/bin:./venv/bin python3 -m mypy
+        args: ["--config-file=./mypy.ini"]
         language: python
         types: [python]
