@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "movies-admin-panel"
+version = "0.1.0"
+description = ""
+authors = ["Орлов Ярослав <y.orlov@fonmix.ru>"]
+readme = "README.md"
+packages = [{include = "movies_admin_panel"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+django = "^4.2.2"
+pre-commit = "^3.3.3"
+flake8-bandit = "4.1.1"
+bandit = "1.7.5"
+flake8-print = "5.0.0"
+mypy = "1.4.0"
+flake8-broken-line = "1.0.0"
+flake8 = "6.0.0"
+flake8-bugbear = "23.6.5"
+flake8-builtins = "2.1.0"
+flake8-commas = "2.1.0"
+flake8-quotes = "3.3.2"
+flake8-pytest = "^1.4"
+flake8-pytest-style = "^1.7.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
