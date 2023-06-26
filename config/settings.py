@@ -98,6 +98,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "ru-RU"
 
+LOCALE_PATHS = ['movies/local']
+
 TIME_ZONE = "UTC"
 
 USE_I18N = True

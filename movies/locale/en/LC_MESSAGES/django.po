@@ -1,0 +1,110 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-06-26 17:30+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: movies/admin.py:56
+msgid "Film Genres"
+msgstr ""
+
+#: movies/enums.py:8
+msgid "Movie"
+msgstr ""
+
+#: movies/enums.py:9
+msgid "TV Show"
+msgstr ""
+
+#: movies/enums.py:15
+msgid "Producer"
+msgstr ""
+
+#: movies/enums.py:16
+msgid "Actor"
+msgstr ""
+
+#: movies/enums.py:17
+msgid "Writer"
+msgstr ""
+
+#: movies/enums.py:18
+msgid "Director"
+msgstr ""
+
+#: movies/models.py:16
+msgid "Title"
+msgstr ""
+
+#: movies/models.py:21 movies/models.py:75
+msgid "Description"
+msgstr ""
+
+#: movies/models.py:26
+msgid "Creation Date"
+msgstr ""
+
+#: movies/models.py:31
+msgid "Type"
+msgstr ""
+
+#: movies/models.py:37
+msgid "Rating"
+msgstr ""
+
+#: movies/models.py:42
+msgid "File path"
+msgstr ""
+
+#: movies/models.py:51
+msgid "Film Work"
+msgstr ""
+
+#: movies/models.py:52
+msgid "Film Works"
+msgstr ""
+
+#: movies/models.py:70
+msgid "Name"
+msgstr ""
+
+#: movies/models.py:84 movies/models.py:94 movies/models.py:105
+msgid "Genre"
+msgstr ""
+
+#: movies/models.py:85 movies/models.py:106
+msgid "Genres"
+msgstr ""
+
+#: movies/models.py:99 movies/models.py:145
+msgid "Film work"
+msgstr ""
+
+#: movies/models.py:121
+msgid "Full Name"
+msgstr ""
+
+#: movies/models.py:130 movies/models.py:140 movies/models.py:158
+msgid "Person"
+msgstr ""
+
+#: movies/models.py:131 movies/models.py:159
+msgid "Persons"
+msgstr ""
+
+#: movies/models.py:152
+msgid "Role"
+msgstr ""

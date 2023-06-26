@@ -1,0 +1,112 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-06-26 17:30+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
+"(n%100>=11 && n%100<=14)? 2 : 3);\n"
+#: movies/admin.py:56
+msgid "Film Genres"
+msgstr "Жанры фильма"
+
+#: movies/enums.py:8
+msgid "Movie"
+msgstr "Фильм"
+
+#: movies/enums.py:9
+msgid "TV Show"
+msgstr "ТВ Шоу"
+
+#: movies/enums.py:15
+msgid "Producer"
+msgstr "Продюсер"
+
+#: movies/enums.py:16
+msgid "Actor"
+msgstr "Актёр"
+
+#: movies/enums.py:17
+msgid "Writer"
+msgstr "Писатель"
+
+#: movies/enums.py:18
+msgid "Director"
+msgstr "Директор"
+
+#: movies/models.py:16
+msgid "Title"
+msgstr "Название"
+
+#: movies/models.py:21 movies/models.py:75
+msgid "Description"
+msgstr "Описание"
+
+#: movies/models.py:26
+msgid "Creation Date"
+msgstr "Дата создания"
+
+#: movies/models.py:31
+msgid "Type"
+msgstr "Тип"
+
+#: movies/models.py:37
+msgid "Rating"
+msgstr "Рейтинг"
+
+#: movies/models.py:42
+msgid "File path"
+msgstr "Путь до файла"
+
+#: movies/models.py:51
+msgid "Film Work"
+msgstr "Кинопроизведение"
+
+#: movies/models.py:52
+msgid "Film Works"
+msgstr "Кинопроизведения"
+
+#: movies/models.py:70
+msgid "Name"
+msgstr "Название"
+
+#: movies/models.py:84 movies/models.py:94 movies/models.py:105
+msgid "Genre"
+msgstr "Жанр"
+
+#: movies/models.py:85 movies/models.py:106
+msgid "Genres"
+msgstr "Жанры"
+
+#: movies/models.py:99 movies/models.py:145
+msgid "Film work"
+msgstr "Кинопроизведение"
+
+#: movies/models.py:121
+msgid "Full Name"
+msgstr "Полное имя"
+
+#: movies/models.py:130 movies/models.py:140 movies/models.py:158
+msgid "Person"
+msgstr "Участник фильма"
+
+#: movies/models.py:131 movies/models.py:159
+msgid "Persons"
+msgstr "Участники фильма"
+
+#: movies/models.py:152
+msgid "Role"
+msgstr "Роль"

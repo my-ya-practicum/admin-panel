@@ -1,5 +1,6 @@
 .PHONY: up-local
 up-local:
+	@touch ./.docker.env
 	@docker-compose -f docker-compose.yaml up
 
 .PHONY: down-local
