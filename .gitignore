@@ -1,5 +1,7 @@
 
 .env
+.env.local
+.docker.env
 .vscode
 db.sqlite-journal
 
