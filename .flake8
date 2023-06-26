@@ -5,6 +5,9 @@ ignore =
     # A003: class attribute "id" is shadowing a python builtin
     A003
 
+per-file-ignores =
+    *tests/*: S101
+
 exclude =
     */migrations/*
 
