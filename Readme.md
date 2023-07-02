@@ -4,9 +4,13 @@
 
 # Init development
 
-1) init poetry
+1) init poetry and pre-commit
 ```bash
 poetry install --no-root
+```
+
+```bash
+poetry run pre-commit install
 ```
 
 2) env
