@@ -48,6 +48,7 @@ withenv ./.env.local poetry run pytest ./sqlite_to_postgres/
 
 
 # TODO:
++ rus version
 + запуск gunicorn + config
 + static data из django
 
