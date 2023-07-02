@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+
+  nginx:
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile
+    container_name: admin-nginx
+    restart: unless-stopped
+    depends_on:
+      - admin-movies
+
+  admin-movies:
+    build:
+      context: .
+      dockerfile: docker/django/Dockerfile
+    container_name: admin-movies
+    restart: unless-stopped
+    env_file: ./src/.env
+    depends_on:
+      - database
+    command: sh -c "/usr/local/bin/entrypoint.sh"
+
+  database:
+    image: postgres:13
+    container_name: database
+    restart: unless-stopped
+    env_file: ./.docker.env
+    volumes:
+      - db:/var/lib/postgresql/data/
+
+volumes:
+  db:
