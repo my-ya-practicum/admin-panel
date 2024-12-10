@@ -1,0 +1,40 @@
+services:
+
+  admin-database:
+    image: postgres:14.4
+    container_name: admin-database
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-movies_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-movies_password}
+      POSTGRES_DB: ${POSTGRES_DB:-movies_db}
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER:-movies_user} -d ${POSTGRES_DB:-movies_db}'"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - db:/var/lib/postgresql/data/
+
+  admin-movies:
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile
+    container_name: admin-movies
+    restart: unless-stopped
+    env_file: ../.docker.env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../src/app:/opt/app
+    # command: sh -c "/usr/local/bin/entrypoint.sh"
+    command: poetry run python3 ./app/manage.py runserver 0.0.0.0:8000
+    # command: sleep infinity
+    depends_on:
+      admin-database:
+        condition: service_healthy
+
+volumes:
+  db:
