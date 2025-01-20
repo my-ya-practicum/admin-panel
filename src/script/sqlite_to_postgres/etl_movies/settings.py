@@ -14,11 +14,11 @@ class PostgresConfig(BaseSettings):
 
     @property
     def database_url(self):
-        return f"postgresql+psycopg://{self.user}:{self.password}@{self.host}:{self.port}/{self.db}"
+        return f"postgresql://{self.user}:{self.password}@{self.host}:{self.port}/{self.db}"
 
 
 class SqliteConfig(BaseSettings):
-    extract_chunk_size: int = 10
+    extract_chunk_size: int = 30
     sqlite_db_file_path: str = "db.sqlite"
 
 

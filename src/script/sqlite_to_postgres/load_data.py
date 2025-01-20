@@ -16,8 +16,9 @@ async def load_from_sqlite():
     sqlite_loader = SQLiteLoader(settings)
 
     async with sqlite_loader:
-        res = await postgres_saver.load_data(await sqlite_loader.extract())
-        print(res)
+        # await sqlite_loader.extract()
+        data, db_table, dto = await sqlite_loader.extract()
+        await postgres_saver.load_data(db_table=db_table, dto_class=dto, data=data)
 
     # data = sqlite_loader.load_movies()
     # postgres_saver.save_all_data(data)
