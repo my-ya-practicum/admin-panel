@@ -1,0 +1,26 @@
+name: Code check
+on: [push]
+jobs:
+  linter:
+    name: Линтер
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 2
+      matrix:
+        python-version: [3.11, 3.12]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install Dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        pip install poetry
+        poetry install --no-root
+    - name: flake8 Lint
+      run: poetry run flake8 .
+    - name: mypy Lint
+      run: poetry run mypy .
