@@ -7,7 +7,7 @@ jobs:
     strategy:
       max-parallel: 2
       matrix:
-        python-version: [3.9, 3_10]
+        python-version: [3.11, 3.12]
 
     steps:
     - uses: actions/checkout@v2
@@ -22,3 +22,5 @@ jobs:
         poetry install
     - name: flake8 Lint
       run: flake8 .
+    - name: mypy Lint
+      run: mypy .
