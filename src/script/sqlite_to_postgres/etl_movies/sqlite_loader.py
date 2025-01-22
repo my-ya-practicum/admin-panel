@@ -6,18 +6,12 @@ import logging.config
 from types import TracebackType
 from typing import Optional, Type
 from script.sqlite_to_postgres.etl_movies.dto.base import DataClass
-from script.sqlite_to_postgres.etl_movies.dto.film_work import FilmWorkDTO
 from script.sqlite_to_postgres.etl_movies.logger import LOGGING_CONFIG
 from script.sqlite_to_postgres.etl_movies.settings import Settings
 
 
 logging.config.dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger(__name__)
-
-# FIXME: что-то более структурированное что-ли
-table_dto_map = {
-    'film_work': FilmWorkDTO,
-}
 
 
 class SQLiteLoader:
@@ -40,14 +34,14 @@ class SQLiteLoader:
     ) -> None:
         pass
 
-    async def extract(self):
-        for table, dto in table_dto_map.items():
-            return await self._build_query(db_table=table, dto_class=dto), table, dto
+    async def extract(self, db_table: str, dto_class: Type[DataClass]):
+        return await self._build_query(db_table=db_table, dto_class=dto_class)
 
     async def _build_query(self, db_table: str, dto_class: Type[DataClass]):
         field_names = [field.name for field in fields(dto_class)]
         query = f"SELECT {", ".join(field_names)} "
         query += f"FROM {db_table} "
+        query += "ORDER BY id"
         return self._execute_query(query, dto_class)
 
     async def _execute_query(self, query: str, dto_class: Type[DataClass]):

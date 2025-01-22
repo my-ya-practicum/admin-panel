@@ -5,6 +5,7 @@ repos:
         name: black
         description: black
         entry: env -i PATH=./.venv/bin python3 -m black
+        exclude: ^src/app/movies/migrations/
         language: python
         types: [python]
 
@@ -23,5 +24,6 @@ repos:
         name: mypy
         description: mypy
         entry: env -i PATH=./.venv/bin python3 -m mypy
+        exclude: ^src/app/movies/migrations/
         language: python
         types: [python]

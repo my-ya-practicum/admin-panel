@@ -3,14 +3,14 @@ from django.db import models
 
 
 class CreateTimeStampedMixin(models.Model):
-    created = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         abstract = True
 
 
 class ModifyTimeStampedMixin(models.Model):
-    modified = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         abstract = True

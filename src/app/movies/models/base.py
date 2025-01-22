@@ -153,7 +153,7 @@ class PersonFilmWork(UUIDMixin, CreateTimeStampedMixin):
         verbose_name=_("Role"),
     )
 
-    created = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         app_label = "movies"

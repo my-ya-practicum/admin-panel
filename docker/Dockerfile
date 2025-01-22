@@ -26,5 +26,6 @@ RUN poetry install --no-root --only main
 
 # Копирования кода приложения
 COPY src/app $APP_DIR
+COPY docker/django/entrypoint.sh /usr/local/bin/entrypoint.sh
 
 EXPOSE 8000
