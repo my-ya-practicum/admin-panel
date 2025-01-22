@@ -5,6 +5,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class PostgresConfig(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="postgres_")
     echo_log: bool = True
+    load_chunk_size: int = 30
 
     host: str = Field(default="admin-database")
     port: int = Field(default=5432)
@@ -18,7 +19,7 @@ class PostgresConfig(BaseSettings):
 
 
 class SqliteConfig(BaseSettings):
-    extract_chunk_size: int = 30
+    extract_chunk_size: int = 3
     sqlite_db_file_path: str = "db.sqlite"
 
 

@@ -9,15 +9,11 @@ import django.db.models.deletion
 import uuid
 
 
-class Migration(
-    migrations.Migration
-):
+class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = (
-        []
-    )
+    dependencies = []
 
     operations = [
         migrations.RunSQL(
@@ -28,16 +24,12 @@ class Migration(
             name='FilmWork',
             fields=[
                 (
-                    'created',
-                    models.DateTimeField(
-                        auto_now_add=True
-                    ),
+                    'created_at',
+                    models.DateTimeField(auto_now_add=True),
                 ),
                 (
-                    'modified',
-                    models.DateTimeField(
-                        auto_now=True
-                    ),
+                    'updated_at',
+                    models.DateTimeField(auto_now=True),
                 ),
                 (
                     'id',
@@ -94,12 +86,8 @@ class Migration(
                         blank=True,
                         null=True,
                         validators=[
-                            django.core.validators.MinValueValidator(
-                                1
-                            ),
-                            django.core.validators.MaxValueValidator(
-                                100
-                            ),
+                            django.core.validators.MinValueValidator(1),
+                            django.core.validators.MaxValueValidator(100),
                         ],
                         verbose_name='Rating',
                     ),
@@ -124,16 +112,12 @@ class Migration(
             name='Genre',
             fields=[
                 (
-                    'created',
-                    models.DateTimeField(
-                        auto_now_add=True
-                    ),
+                    'created_at',
+                    models.DateTimeField(auto_now_add=True),
                 ),
                 (
-                    'modified',
-                    models.DateTimeField(
-                        auto_now=True
-                    ),
+                    'updated_at',
+                    models.DateTimeField(auto_now=True),
                 ),
                 (
                     'id',
@@ -170,16 +154,12 @@ class Migration(
             name='Person',
             fields=[
                 (
-                    'created',
-                    models.DateTimeField(
-                        auto_now_add=True
-                    ),
+                    'created_at',
+                    models.DateTimeField(auto_now_add=True),
                 ),
                 (
-                    'modified',
-                    models.DateTimeField(
-                        auto_now=True
-                    ),
+                    'updated_at',
+                    models.DateTimeField(auto_now=True),
                 ),
                 (
                     'id',
@@ -243,10 +223,8 @@ class Migration(
                     ),
                 ),
                 (
-                    'created',
-                    models.DateTimeField(
-                        auto_now_add=True
-                    ),
+                    'created_at',
+                    models.DateTimeField(auto_now_add=True),
                 ),
                 (
                     'film_work',
@@ -275,10 +253,8 @@ class Migration(
             name='GenreFilmWork',
             fields=[
                 (
-                    'created',
-                    models.DateTimeField(
-                        auto_now_add=True
-                    ),
+                    'created_at',
+                    models.DateTimeField(auto_now_add=True),
                 ),
                 (
                     'id',
@@ -352,9 +328,7 @@ class Migration(
         migrations.AddIndex(
             model_name='filmwork',
             index=models.Index(
-                fields=[
-                    'creation_date'
-                ],
+                fields=['creation_date'],
                 name='film_work_creation_date_idx',
             ),
         ),

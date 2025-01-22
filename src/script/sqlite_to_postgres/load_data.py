@@ -7,6 +7,14 @@ import asyncio
 from script.sqlite_to_postgres.etl_movies import Settings
 from script.sqlite_to_postgres.etl_movies.postgres_saver import PostgresSaver
 from script.sqlite_to_postgres.etl_movies.sqlite_loader import SQLiteLoader
+from script.sqlite_to_postgres.etl_movies.dto.film_work import FilmWorkDTO, GenreDTO, GenreFilmWorkDTO
+
+# FIXME: что-то более структурированное что-ли
+table_dto_map = {
+    'film_work': FilmWorkDTO,
+    'genre': GenreDTO,
+    'genre_film_work': GenreFilmWorkDTO,
+}
 
 
 async def load_from_sqlite():
@@ -15,10 +23,10 @@ async def load_from_sqlite():
     postgres_saver = PostgresSaver(settings)
     sqlite_loader = SQLiteLoader(settings)
 
-    async with sqlite_loader:
-        # await sqlite_loader.extract()
-        data, db_table, dto = await sqlite_loader.extract()
-        await postgres_saver.load_data(db_table=db_table, dto_class=dto, data=data)
+    async with sqlite_loader, postgres_saver:
+        for table, dto in table_dto_map.items():
+            data = await sqlite_loader.extract(table, dto)
+            await postgres_saver.load_data(data=data, db_table=table, dto_class=dto)
 
     # data = sqlite_loader.load_movies()
     # postgres_saver.save_all_data(data)
