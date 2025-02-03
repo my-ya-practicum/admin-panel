@@ -1,5 +1,10 @@
 # Локальный запуск
 
+```bash
+poetry env use $HOME/.pyenv/versions/3.12.6/bin/python3.12
+poetry install --no-root
+```
+
 ```
 make up
 ```

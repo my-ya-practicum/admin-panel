@@ -23,4 +23,4 @@ jobs:
     - name: flake8 Lint
       run: poetry run flake8 .
     - name: mypy Lint
-      run: poetry run mypy --exclude ^src/app/movies/migrations/ .
+      run: poetry run mypy --explicit-package-bases --exclude ^src/app/movies/migrations/ .
