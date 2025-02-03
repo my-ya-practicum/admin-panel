@@ -22,6 +22,7 @@ RUN pip install --upgrade pip && \
     pip install --no-cache-dir poetry
 
 COPY pyproject.toml pyproject.toml
+COPY poetry.lock poetry.lock
 RUN poetry install --no-root --only main
 
 # Копирования кода приложения
