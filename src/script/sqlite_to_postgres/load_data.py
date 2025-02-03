@@ -4,7 +4,7 @@ withenv ./.env poetry run python3 ./src/script/sqlite_to_postgres/load_data.py
 
 import asyncio
 
-from script.sqlite_to_postgres.etl_movies import Settings
+from script.sqlite_to_postgres.etl_movies.settings import Settings
 from script.sqlite_to_postgres.etl_movies.postgres_saver import PostgresSaver
 from script.sqlite_to_postgres.etl_movies.sqlite_loader import SQLiteLoader
 from script.sqlite_to_postgres.etl_movies.dto.film_work import FilmWorkDTO, GenreDTO, GenreFilmWorkDTO, PersonDTO
