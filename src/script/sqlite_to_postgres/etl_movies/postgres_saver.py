@@ -13,8 +13,6 @@ from script.sqlite_to_postgres.etl_movies.settings import Settings
 logging.config.dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger(__name__)
 
-DTOTypes = FilmWorkDTO | PersonDTO | GenreDTO | GenreFilmWorkDTO
-
 
 class PostgresSaver:
     def __init__(self, settings: Settings):
@@ -43,7 +41,7 @@ class PostgresSaver:
         self,
         db_table: str,
         dto_class: Type[DataClass],
-        data: AsyncGenerator[Generator[DTOTypes, None, None], Any],
+        data: AsyncGenerator[Generator[FilmWorkDTO | PersonDTO | GenreDTO | GenreFilmWorkDTO, None, None], Any],
     ):
         """
         Асинхронный метод для загрузки данных в таблицу базы данных с обработкой конфликтов.
