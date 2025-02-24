@@ -6,7 +6,13 @@ from types import TracebackType
 from typing import Any, AsyncGenerator, Generator, Optional, Type
 
 from script.sqlite_to_postgres.etl_movies.dto.base import DataClass
-from script.sqlite_to_postgres.etl_movies.dto.film_work import FilmWorkDTO, GenreDTO, GenreFilmWorkDTO, PersonDTO
+from script.sqlite_to_postgres.etl_movies.dto.film_work import (
+    FilmWorkDTO,
+    GenreDTO,
+    GenreFilmWorkDTO,
+    PersonDTO,
+    PersonFilmWorkDTO,
+)
 from script.sqlite_to_postgres.etl_movies.logger import LOGGING_CONFIG
 from script.sqlite_to_postgres.etl_movies.settings import Settings
 
@@ -41,7 +47,9 @@ class PostgresSaver:
         self,
         db_table: str,
         dto_class: Type[DataClass],
-        data: AsyncGenerator[Generator[FilmWorkDTO | PersonDTO | GenreDTO | GenreFilmWorkDTO, None, None], Any],
+        data: AsyncGenerator[
+            Generator[FilmWorkDTO | PersonDTO | GenreDTO | GenreFilmWorkDTO | PersonFilmWorkDTO, None, None], Any
+        ],
     ):
         """
         Асинхронный метод для загрузки данных в таблицу базы данных с обработкой конфликтов.

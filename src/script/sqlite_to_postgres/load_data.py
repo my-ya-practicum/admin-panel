@@ -7,7 +7,13 @@ import asyncio
 from script.sqlite_to_postgres.etl_movies.settings import Settings
 from script.sqlite_to_postgres.etl_movies.postgres_saver import PostgresSaver
 from script.sqlite_to_postgres.etl_movies.sqlite_loader import SQLiteLoader
-from script.sqlite_to_postgres.etl_movies.dto.film_work import FilmWorkDTO, GenreDTO, GenreFilmWorkDTO, PersonDTO
+from script.sqlite_to_postgres.etl_movies.dto.film_work import (
+    FilmWorkDTO,
+    GenreDTO,
+    GenreFilmWorkDTO,
+    PersonDTO,
+    PersonFilmWorkDTO,
+)
 
 # FIXME: что-то более структурированное что-ли
 table_dto_map = {
@@ -15,6 +21,7 @@ table_dto_map = {
     'person': PersonDTO,
     'genre': GenreDTO,
     'genre_film_work': GenreFilmWorkDTO,
+    'person_film_work': PersonFilmWorkDTO,
 }
 
 
