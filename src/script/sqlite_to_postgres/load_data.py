@@ -7,7 +7,13 @@ import asyncio
 from script.sqlite_to_postgres.etl_movies.settings import Settings
 from script.sqlite_to_postgres.etl_movies.postgres_saver import PostgresSaver
 from script.sqlite_to_postgres.etl_movies.sqlite_loader import SQLiteLoader
-from script.sqlite_to_postgres.etl_movies.dto.film_work import FilmWorkDTO, GenreDTO, GenreFilmWorkDTO, PersonDTO
+from script.sqlite_to_postgres.etl_movies.dto.film_work import (
+    FilmWorkDTO,
+    GenreDTO,
+    GenreFilmWorkDTO,
+    PersonDTO,
+    PersonFilmWorkDTO,
+)
 
 # FIXME: что-то более структурированное что-ли
 table_dto_map = {
@@ -15,6 +21,7 @@ table_dto_map = {
     'person': PersonDTO,
     'genre': GenreDTO,
     'genre_film_work': GenreFilmWorkDTO,
+    'person_film_work': PersonFilmWorkDTO,
 }
 
 
@@ -29,14 +36,6 @@ async def load_from_sqlite():
             data = await sqlite_loader.extract(table, dto)
             await postgres_saver.load_data(data=data, db_table=table, dto_class=dto)
 
-    # data = sqlite_loader.load_movies()
-    # postgres_saver.save_all_data(data)
-
 
 if __name__ == '__main__':
     asyncio.run(load_from_sqlite())
-    # dsl = {'dbname': 'movies_database', 'user': 'app', 'password': '123qwe', 'host': '127.0.0.1', 'port': 5432}
-    # with sqlite3.connect('db.sqlite') as sqlite_conn, psycopg.connect(
-    #     **dsl, row_factory=dict_row, cursor_factory=ClientCursor
-    # ) as pg_conn:
-    #     load_from_sqlite(sqlite_conn, pg_conn)

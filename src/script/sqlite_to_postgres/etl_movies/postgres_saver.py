@@ -1,5 +1,4 @@
 from dataclasses import fields
-from itertools import repeat
 import logging.config
 import psycopg
 
@@ -7,7 +6,13 @@ from types import TracebackType
 from typing import Any, AsyncGenerator, Generator, Optional, Type
 
 from script.sqlite_to_postgres.etl_movies.dto.base import DataClass
-from script.sqlite_to_postgres.etl_movies.dto.film_work import FilmWorkDTO
+from script.sqlite_to_postgres.etl_movies.dto.film_work import (
+    FilmWorkDTO,
+    GenreDTO,
+    GenreFilmWorkDTO,
+    PersonDTO,
+    PersonFilmWorkDTO,
+)
 from script.sqlite_to_postgres.etl_movies.logger import LOGGING_CONFIG
 from script.sqlite_to_postgres.etl_movies.settings import Settings
 
@@ -36,38 +41,57 @@ class PostgresSaver:
         traceback: Optional[TracebackType] = None,
     ) -> None:
         logger.debug('Calling __aexit__')
-        # self.connection.commit()
         self.connection.close()
 
     async def load_data(
         self,
         db_table: str,
         dto_class: Type[DataClass],
-        data: AsyncGenerator[Generator[FilmWorkDTO, None, None], Any],
+        data: AsyncGenerator[
+            Generator[FilmWorkDTO | PersonDTO | GenreDTO | GenreFilmWorkDTO | PersonFilmWorkDTO, None, None], Any
+        ],
     ):
-        await self._build_query(
-            db_table=db_table,
-            dto_class=dto_class,
-            data=data,
-        )
+        """
+        Асинхронный метод для загрузки данных в таблицу базы данных с обработкой конфликтов.
 
-    async def _build_query(
-        self,
-        data: AsyncGenerator[Generator[FilmWorkDTO, None, None], Any],
-        db_table: str,
-        dto_class: Type[DataClass],
-    ):
+        Описание:
+        Метод load_data выполняет массовую вставку данных в указанную таблицу базы данных,
+        используя предоставленные данные и класс DTO (Data Transfer Object).
+        При возникновении конфликта по уникальному полю id, данные обновляются с помощью конструкции ON CONFLICT.
+
+        Параметры:
+        - db_table: Название таблицы в базе данных, куда будут вставлены данные.
+        - dto_class: Класс DTO, описывающий структуру данных. Должен быть совместим с типами данных из параметра data.
+        - data: Асинхронный генератор, предоставляющий порции данных для вставки.
+                Каждая порция представляет собой последовательность объектов DTO.
+
+        Логика работы:
+        1. **Подготовка запроса**:
+        - Извлекаются имена полей из класса DTO (field_names).
+        - Формируется базовая часть SQL-запроса для вставки данных (INSERT INTO).
+
+        2. **Обработка данных**:
+        - Для каждой порции данных (list_items) из асинхронного генератора data:
+            - Собираются значения всех полей для каждого объекта DTO.
+            - Формируются плейсхолдеры (placeholders) для параметров вставки.
+
+        3. **Обработка конфликтов**:
+        - Если происходит конфликт по полю id,
+          выполняется обновление остальных полей с использованием значений из EXCLUDED.
+
+        4. **Выполнение запроса**:
+        - Сформированный SQL-запрос передается в метод _execute_query для выполнения.
+        """
         field_names = [field.name for field in fields(dto_class)]
         base_query = f"INSERT INTO {self.content_schema}.{db_table} ({", ".join(field_names)}) VALUES "
-        placeholder = ", ".join(repeat('%s', len(field_names)))
+        placeholder = ", ".join(['%s'] * len(field_names))
         async for list_items in data:
-            count_items = 0
             values = list()
+            item_count = 0
             for item in list_items:
-                count_items += 1
-                for field in fields(dto_class):
-                    values.append(getattr(item, field.name))
-            placeholders = ', '.join(f"({placeholder})" for _ in range(count_items))
+                item_count += 1
+                values.extend([getattr(item, field) for field in field_names])
+            placeholders = ', '.join(f"({placeholder})" for _ in range(item_count))
             update = ', '.join(['{}=EXCLUDED.{}'.format(key, key) for key in field_names if key != 'id'])
             on_conflict = f"ON CONFLICT (id) DO UPDATE SET {update}"
             query = f"{base_query} {placeholders} {on_conflict}"
@@ -75,5 +99,6 @@ class PostgresSaver:
 
     async def _execute_query(self, query: str, data: list[Any]):
         logger.debug(f"execute: {query}")
-        self.cursor.execute(query, data)
+        logger.debug(f"data: {data}")
+        self.cursor.execute(query, data)  # type: ignore
         self.connection.commit()

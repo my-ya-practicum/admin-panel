@@ -38,3 +38,11 @@ class GenreFilmWorkDTO:
     film_work_id: UUID
     genre_id: UUID
     created_at: datetime
+
+
+@dataclass
+class PersonFilmWorkDTO:
+    id: UUID
+    film_work_id: UUID
+    person_id: UUID
+    created_at: datetime
