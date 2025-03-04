@@ -11,6 +11,7 @@ settings = Settings()
 def sqlite3_connect():
     try:
         connect = sqlite3.connect(settings.sqlite_config.sqlite_db_file_path)
+        connect.row_factory = sqlite3.Row
         yield connect
     finally:
         connect.close()

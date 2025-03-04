@@ -7,9 +7,9 @@ class PostgresConfig(BaseSettings):
     echo_log: bool = True
     load_chunk_size: int = 1000
 
-    host: str = Field(default="admin-database")
+    host: str = Field(default="localhost")
     port: int = Field(default=5432)
-    db: str = Field(default="web_notepad")
+    db: str = Field(default="movies_db")
     user: str = Field(default="movies_user")
     password: str = Field(default="movies_password")
 

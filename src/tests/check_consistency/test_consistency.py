@@ -1,228 +1,159 @@
+"""
+withenv .env poetry run pytest -vv ./src/tests/check_consistency/
+"""
+
 import sqlite3
 import psycopg
+from psycopg.rows import dict_row
+
+from dataclasses import fields
+
+from script.sqlite_to_postgres.etl_movies.dto.film_work import (
+    FilmWorkDTO,
+    GenreDTO,
+    GenreFilmWorkDTO,
+    PersonDTO,
+    PersonFilmWorkDTO,
+)
+from tests.check_consistency.convert import Converter
 
 
-# from script.sqlite_to_postgres.etl_movies.dto.film_work import FilmWorkDTO, GenreDTO, GenreFilmWorkDTO, PersonDTO
+def test_film_work_records(
+    pg_connect: psycopg.Connection,
+    sqlite3_connect: sqlite3.Connection,
+):
+    """Проверка записей film_work."""
+    sqlite3_cursor = sqlite3_connect.cursor()
+    pg_cursor = pg_connect.cursor(row_factory=dict_row)
+
+    field_names = [field.name for field in fields(FilmWorkDTO)]
+
+    sqlite3_query = f"SELECT {', '.join(field_names)} FROM film_work"
+    sqlite3_cursor.execute(sqlite3_query)
+    sqlite3_rows = sqlite3_cursor.fetchall()
+
+    pg_query = f"SELECT {', '.join(field_names)} FROM content.film_work WHERE id = %s"
+
+    for sqlite3_row in sqlite3_rows:
+        sqlite3_data = FilmWorkDTO(**dict(sqlite3_row))
+        sqlite3_data = Converter.convert_sqlite_row_to_dto(dict(sqlite3_row))
+        pg_cursor.execute(pg_query, (sqlite3_data.id,))  # type: ignore
+        pg_row = pg_cursor.fetchone()
+        if pg_row:
+            pg_data = FilmWorkDTO(**pg_row)
+            assert sqlite3_data == pg_data
+        else:
+            raise AssertionError(f"Record with id {sqlite3_data.id} not found in PostgreSQL")
 
 
-class TestIntegrityData:
-    """Проверка целостности данных."""
+def test_genre_records(
+    pg_connect: psycopg.Connection,
+    sqlite3_connect: sqlite3.Connection,
+):
+    """Проверка записей genre."""
+    sqlite3_cursor = sqlite3_connect.cursor()
+    pg_cursor = pg_connect.cursor(row_factory=dict_row)
 
-    def test_count_film_works(
-        self,
-        pg_connect: psycopg.Connection,
-        sqlite3_connect: sqlite3.Connection,
-    ):
-        """Проверка кол-ва записей film_work."""
-        sqlite3_cursor = sqlite3_connect.cursor()
-        query_template = """SELECT count(1) FROM {0}"""
-        count_film_works = sqlite3_cursor.execute(query_template.format('film_work'))
-        [sqlite3_rows] = count_film_works.fetchone()
+    field_names = [field.name for field in fields(GenreDTO)]
 
-        pg_cursor = pg_connect.cursor()
-        pg_cursor.execute(query_template.format('"content"."film_work"'))
-        (pg_rows) = pg_cursor.fetchone()
+    sqlite3_query = f"SELECT {', '.join(field_names)} FROM genre"
+    sqlite3_cursor.execute(sqlite3_query)
+    sqlite3_rows = sqlite3_cursor.fetchall()
 
-        assert sqlite3_rows == pg_rows[0]  # type: ignore
+    pg_query = f"SELECT {', '.join(field_names)} FROM content.genre WHERE id = %s"
 
-    def test_count_genre(
-        self,
-        pg_connect: psycopg.Connection,
-        sqlite3_connect: sqlite3.Connection,
-    ):
-        """Проверка кол-ва записей genre."""
-        sqlite3_cursor = sqlite3_connect.cursor()
-        query_template = """SELECT count(1) FROM {0}"""
-        count_genres = sqlite3_cursor.execute(query_template.format('genre'))
-        [sqlite3_rows] = count_genres.fetchone()
+    for sqlite3_row in sqlite3_rows:
+        sqlite3_data = Converter.convert_sqlite_row_to_genre_dto(dict(sqlite3_row))
+        pg_cursor.execute(pg_query, (sqlite3_data.id,))  # type: ignore
+        pg_row = pg_cursor.fetchone()
 
-        pg_cursor = pg_connect.cursor()
-        pg_cursor.execute(query_template.format('"content"."genre"'))
-        (pg_rows) = pg_cursor.fetchone()
-
-        assert sqlite3_rows == pg_rows[0]  # type: ignore
-
-    def test_count_person(
-        self,
-        pg_connect: psycopg.Connection,
-        sqlite3_connect: sqlite3.Connection,
-    ):
-        """Проверка кол-ва записей person."""
-        sqlite3_cursor = sqlite3_connect.cursor()
-        query_template = """SELECT count(1) FROM {0}"""
-        count_persons = sqlite3_cursor.execute(query_template.format('person'))
-        [sqlite3_rows] = count_persons.fetchone()
-
-        pg_cursor = pg_connect.cursor()
-        pg_cursor.execute(query_template.format('"content"."person"'))
-        (pg_rows) = pg_cursor.fetchone()
-
-        assert sqlite3_rows == pg_rows[0]  # type: ignore
-
-    def test_count_genre_film_work(
-        self,
-        pg_connect: psycopg.Connection,
-        sqlite3_connect: sqlite3.Connection,
-    ):
-        """Проверка кол-ва записей genre_film_work."""
-        sqlite3_cursor = sqlite3_connect.cursor()
-        query_template = """SELECT count(1) FROM {0}"""
-        count_genre_film_works = sqlite3_cursor.execute(query_template.format('genre_film_work'))
-        [sqlite3_rows] = count_genre_film_works.fetchone()
-
-        pg_cursor = pg_connect.cursor()
-        pg_cursor.execute(query_template.format('"content"."genre_film_work"'))
-        (pg_rows) = pg_cursor.fetchone()
-
-        assert sqlite3_rows == pg_rows[0]  # type: ignore
-
-    def test_count_person_film_work(
-        self,
-        pg_connect: psycopg.Connection,
-        sqlite3_connect: sqlite3.Connection,
-    ):
-        """Проверка кол-ва записей person_film_work."""
-        sqlite3_cursor = sqlite3_connect.cursor()
-        query_template = """SELECT count(1) FROM {0}"""
-        count_person_film_work = sqlite3_cursor.execute(query_template.format('person_film_work'))
-        [sqlite3_rows] = count_person_film_work.fetchone()
-
-        pg_cursor = pg_connect.cursor()
-        pg_cursor.execute(query_template.format('"content"."person_film_work"'))
-        (pg_rows) = pg_cursor.fetchone()
-
-        assert sqlite3_rows == pg_rows[0]  # type: ignore
+        if pg_row:
+            pg_data = GenreDTO(**pg_row)
+            assert sqlite3_data == pg_data
+        else:
+            raise AssertionError(f"Record with id {sqlite3_data.id} not found in PostgreSQL")
 
 
-# class TestContent:
-#     """Проверка содержимого записей."""
+def test_genre_film_work_records(
+    pg_connect: psycopg.Connection,
+    sqlite3_connect: sqlite3.Connection,
+):
+    """Проверка записей genre_film_work."""
+    sqlite3_cursor = sqlite3_connect.cursor()
+    pg_cursor = pg_connect.cursor(row_factory=dict_row)
+    field_names = [field.name for field in fields(GenreFilmWorkDTO)]
 
-#     def test_film_work_records(
-#         self,
-#         pg_connect: connection,
-#         sqlite3_connect: Connection,
-#     ):
-#         """Проверка записей film_work."""
-#         sqlite3_cursor = sqlite3_connect.cursor()
-#         pg_cursor = pg_connect.cursor()
+    sqlite3_query = f"SELECT {', '.join(field_names)} FROM genre_film_work"
+    sqlite3_cursor.execute(sqlite3_query)
+    sqlite3_rows = sqlite3_cursor.fetchall()
 
-#         sqlite3_query = """
-#             SELECT "created_at", "updated_at", "id", "title", "description", "creation_date"
-#             FROM film_work
-#         """
-#         sqlite3_rows = sqlite3_cursor.execute(sqlite3_query)
+    pg_query = f"SELECT {', '.join(field_names)} FROM content.genre_film_work WHERE id = %s"
 
-#         pg_query = """
-#             SELECT "created", "modified", "id", "title", "description", "creation_date"
-#             FROM "content"."film_work" WHERE id = '{0}'
-#         """
+    for sqlite3_row in sqlite3_rows:
+        sqlite3_data = Converter.convert_sqlite_row_to_genre_film_work_dto(dict(sqlite3_row))
 
-#         for row in sqlite3_rows.fetchall():
-#             sqlite3_data = FilmWork(*row)
-#             pg_cursor.execute(pg_query.format(sqlite3_data.id))
-#             pg_data = FilmWork(*pg_cursor.fetchone())
-#             assert sqlite3_data == pg_data
+        pg_cursor.execute(pg_query, (sqlite3_data.id,))  # type: ignore
+        pg_row = pg_cursor.fetchone()
 
-#     def test_genre_records(
-#         self,
-#         pg_connect: connection,
-#         sqlite3_connect: Connection,
-#     ):
-#         """Проверка записей genre."""
-#         sqlite3_cursor = sqlite3_connect.cursor()
-#         pg_cursor = pg_connect.cursor()
+        if pg_row:
+            pg_data = GenreFilmWorkDTO(**pg_row)
+            assert sqlite3_data == pg_data
+        else:
+            raise AssertionError(f"Record with id {sqlite3_data.id} not found in PostgreSQL")
 
-#         sqlite3_query = """
-#             SELECT "created_at", "updated_at", "id", "name", "description"
-#             FROM genre
-#         """
-#         sqlite3_rows = sqlite3_cursor.execute(sqlite3_query)
 
-#         pg_query = """
-#             SELECT "created", "modified", "id", "name", "description"
-#             FROM "content"."genre" WHERE id = '{0}'
-#         """
+def test_person_records(
+    pg_connect: psycopg.Connection,
+    sqlite3_connect: sqlite3.Connection,
+):
+    """Проверка записей person."""
+    sqlite3_cursor = sqlite3_connect.cursor()
+    pg_cursor = pg_connect.cursor(row_factory=dict_row)
 
-#         for row in sqlite3_rows.fetchall():
-#             sqlite3_data = Genre(*row)
-#             pg_cursor.execute(pg_query.format(sqlite3_data.id))
-#             pg_data = Genre(*pg_cursor.fetchone())
-#             assert sqlite3_data == pg_data
+    field_names = [field.name for field in fields(PersonDTO)]
 
-#     def test_genre_film_work_records(
-#         self,
-#         pg_connect: connection,
-#         sqlite3_connect: Connection,
-#     ):
-#         """Проверка записей genre_film_work."""
-#         sqlite3_cursor = sqlite3_connect.cursor()
-#         pg_cursor = pg_connect.cursor()
+    sqlite3_query = f"SELECT {', '.join(field_names)} FROM person"
+    sqlite3_cursor.execute(sqlite3_query)
+    sqlite3_rows = sqlite3_cursor.fetchall()
 
-#         sqlite3_query = """
-#             SELECT "created_at", "id", "film_work_id", "genre_id"
-#             FROM genre_film_work
-#         """
-#         sqlite3_rows = sqlite3_cursor.execute(sqlite3_query)
+    pg_query = f"SELECT {', '.join(field_names)} FROM content.person WHERE id = %s"
 
-#         pg_query = """
-#             SELECT "created", "id", "film_work_id", "genre_id"
-#             FROM "content"."genre_film_work" WHERE id = '{0}'
-#         """
+    for sqlite3_row in sqlite3_rows:
+        sqlite3_data = Converter.convert_sqlite_row_to_person_dto(dict(sqlite3_row))
 
-#         for row in sqlite3_rows.fetchall():
-#             sqlite3_data = GenreFilmWork(*row)
-#             pg_cursor.execute(pg_query.format(sqlite3_data.id))
-#             pg_data = GenreFilmWork(*pg_cursor.fetchone())
-#             assert sqlite3_data == pg_data
+        pg_cursor.execute(pg_query, (sqlite3_data.id,))  # type: ignore
+        pg_row = pg_cursor.fetchone()
 
-#     def test_person_records(
-#         self,
-#         pg_connect: connection,
-#         sqlite3_connect: Connection,
-#     ):
-#         """Проверка записей person."""
-#         sqlite3_cursor = sqlite3_connect.cursor()
-#         pg_cursor = pg_connect.cursor()
+        if pg_row:
+            pg_data = PersonDTO(**pg_row)
+            assert sqlite3_data == pg_data
+        else:
+            raise AssertionError(f"Record with id {sqlite3_data.id} not found in PostgreSQL")
 
-#         sqlite3_query = """
-#             SELECT "created_at", "updated_at", "id", "full_name"
-#             FROM person
-#         """
-#         sqlite3_rows = sqlite3_cursor.execute(sqlite3_query)
 
-#         pg_query = """
-#             SELECT "created", "modified", "id", "full_name"
-#             FROM "content"."person" WHERE id = '{0}'
-#         """
+def test_person_film_work_records(
+    pg_connect: psycopg.Connection,
+    sqlite3_connect: sqlite3.Connection,
+):
+    """Проверка записей person_film_work."""
+    sqlite3_cursor = sqlite3_connect.cursor()
+    pg_cursor = pg_connect.cursor(row_factory=dict_row)
+    field_names = [field.name for field in fields(PersonFilmWorkDTO)]
 
-#         for row in sqlite3_rows.fetchall():
-#             sqlite3_data = Person(*row)
-#             pg_cursor.execute(pg_query.format(sqlite3_data.id))
-#             pg_data = Person(*pg_cursor.fetchone())
-#             assert sqlite3_data == pg_data
+    sqlite3_query = f"SELECT {', '.join(field_names)} FROM person_film_work"
+    sqlite3_cursor.execute(sqlite3_query)
+    sqlite3_rows = sqlite3_cursor.fetchall()
 
-#     def test_person_film_work_records(
-#         self,
-#         pg_connect: connection,
-#         sqlite3_connect: Connection,
-#     ):
-#         """Проверка записей person_film_work."""
-#         sqlite3_cursor = sqlite3_connect.cursor()
-#         pg_cursor = pg_connect.cursor()
+    pg_query = f"SELECT {', '.join(field_names)} FROM content.person_film_work WHERE id = %s"
 
-#         sqlite3_query = """
-#             SELECT "created_at", "id", "film_work_id", "person_id", "role"
-#             FROM person_film_work
-#         """
-#         sqlite3_rows = sqlite3_cursor.execute(sqlite3_query)
+    for sqlite3_row in sqlite3_rows:
+        sqlite3_data = Converter.convert_sqlite_row_to_person_film_work_dto(dict(sqlite3_row))
 
-#         pg_query = """
-#             SELECT "created", "id", "film_work_id", "person_id", "role"
-#             FROM "content"."person_film_work" WHERE id = '{0}'
-#         """
+        pg_cursor.execute(pg_query, (sqlite3_data.id,))  # type: ignore
+        pg_row = pg_cursor.fetchone()
 
-#         for row in sqlite3_rows.fetchall():
-#             sqlite3_data = PersonFilmWork(*row)
-#             pg_cursor.execute(pg_query.format(sqlite3_data.id))
-#             pg_data = PersonFilmWork(*pg_cursor.fetchone())
-#             assert sqlite3_data == pg_data
+        if pg_row:
+            pg_data = PersonFilmWorkDTO(**pg_row)
+            assert sqlite3_data == pg_data
+        else:
+            raise AssertionError(f"Record with id {sqlite3_data.id} not found in PostgreSQL")
