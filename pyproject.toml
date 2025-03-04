@@ -16,6 +16,7 @@ pydantic = {extras = ["settings"], version = "^2.10.3"}
 pydantic-settings = "^2.6.1"
 django = "^5.1.5"
 pytest = "^8.3.4"
+dacite = "^1.9.2"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^4.0.1"
